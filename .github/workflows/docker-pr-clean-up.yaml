@@ -1,5 +1,9 @@
 name: 'Docker PR Clean Up'
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   pull_request:
     types: [closed]
@@ -12,7 +16,7 @@ jobs:
       - name: Prune
         uses: vlaurin/action-ghcr-prune@main
         with:
-          token: ${{ secrets.PACKAGES_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           container: ${{ github.event.repository.name }}
           dry-run: false
           tag-regex: pr-${{github.event.pull_request.number}}
