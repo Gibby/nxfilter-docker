@@ -1,22 +1,22 @@
 FROM ubuntu:latest
 
-LABEL maintainer="Gibby"
-LABEL version="4.6.5.3"
-LABEL release-date="2023-02-09"
-LABEL source="https://github.com/gibby/nxfilter-docker"
+ENV TZ='America/New_York'
+ENV VERSION='4.6.5.3'
 
-ENV TZ=${TZ:-Etc/UTC}
+RUN apt-get -y update && \
+    apt-get -y install --no-install-recommends dnsutils iputils-ping tzdata curl openjdk-11-jre-headless unzip && \
+    cd /tmp && \
+    curl http://pub.nxfilter.org/nxfilter-"${VERSION}".deb -o nxfilter.deb && \
+    apt -y install --no-install-recommends ./nxfilter.deb && \
+    curl http://pub.nxfilter.org/nxfilter-"${VERSION}".zip -o nxfilter.zip && \
+    unzip nxfilter.zip && \
+    cp -a conf /root/ && \
+    apt-get -y purge curl unzip && \
+    apt-get clean && \
+    rm -fr /var/lib/apt/lists/* && \
+    rm -fr /tmp/*
 
-RUN apt -y update && apt -y upgrade \
-  && apt -y install --no-install-recommends dnsutils iputils-ping tzdata curl openjdk-11-jre-headless \
-  && curl $(printf ' -O http://pub.nxfilter.org/nxfilter-%s.deb' $(curl https://nxfilter.org/curver.php)) \
-  && apt -y install --no-install-recommends ./$(printf 'nxfilter-%s.deb' $(curl https://nxfilter.org/curver.php)) \
-  && apt -y clean autoclean \
-  && apt -y autoremove \
-  && rm -rf ./$(printf 'nxfilter-%s.deb' $(curl https://nxfilter.org/curver.php)) \
-  && rm -rf /var/lib/apt && rm -rf /var/lib/dpkg && rm -rf /var/lib/cache && rm -rf /var/lib/log \
-  && echo "$(curl https://nxfilter.org/curver.php)" > /nxfilter/version.txt
-
+COPY start.sh /start.sh
 EXPOSE 53/udp 19004/udp 80 443 19002 19003 19004
 
-CMD ["/nxfilter/bin/startup.sh"]
+CMD ["/start.sh"]
