@@ -17,7 +17,7 @@ docker run -it --name nxfilter \
    -p 80:80 \
    -p 443:443 \
    -p 19002-19004:19002-19004 \
-   deepwoods/nxfilter:latest
+   ghcr.io/gibby/nxfilter-docker
 ```
 
 #### Detached container with persistent data volumes: ####
@@ -33,13 +33,13 @@ docker run -dt --name nxfilter \
   -p 80:80 \
   -p 443:443 \
   -p 19002-19004:19002-19004 \
-  deepwoods/nxfilter:latest
+  ghcr.io/gibby/nxfilter-docker
 ```
 
 
 ## Configuration
 * The admin GUI URL is http://[DOCKER_HOST_SERVER_IP]/admin
-* The default Block Redirection IP under System -> Setup needs to match your [DOCKER_HOST_SERVER_IP] unless you're bridging your docker network to your local LAN or using MACVLAN.  
+* The default Block Redirection IP under System -> Setup needs to match your [DOCKER_HOST_SERVER_IP] unless you're bridging your docker network to your local LAN or using MACVLAN.
 * TZ of the container defaults to UTC unless overridden by setting the environment variable to your locale.  [see List of tz time zones](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
 
 
@@ -51,7 +51,7 @@ version: '3.5'
 
 services:
   nxfilter:
-    image: deepwoods/nxfilter:latest
+    image: ghcr.io/gibby/nxfilter-docker
     container_name: nxfilter
     hostname: nxfilter
     restart: unless-stopped
@@ -86,11 +86,11 @@ Open a bash shell on running container name: `docker exec -it nxfilter /bin/bash
 
 > **Warning**
 > Commands below will delete all data volumes not associated with a container!
-> 
+>
 > Remove container & persistent volumes(clean slate): `docker-compose down && docker volume prune`
 
 ## Updating ##
-1. Pull the latest container.  `docker pull deepwoods/nxfilter:latest`
+1. Pull the latest container.  `docker pull ghcr.io/gibby/nxfilter-docker`
 2. Stop and remove the current container.  `docker stop nxfilter && docker rm nxfilter`
 > **Note** If using docker-compose:  `docker-compose down`
 3. Run the new container with the same command from above.  [Detached container](#detached-container-with-persistent-data-volumes)
